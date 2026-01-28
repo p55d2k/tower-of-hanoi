@@ -136,7 +136,11 @@ function drawScene(state, dragState = null) {
   towerKeys.forEach((towerKey, idx) => {
     const disks = state.towers[towerKey];
     disks.forEach((disk, level) => {
-      if (dragState && dragState.src === towerKey && dragState.level === level) {
+      if (
+        dragState &&
+        dragState.src === towerKey &&
+        dragState.level === level
+      ) {
         return;
       }
 
@@ -158,7 +162,12 @@ function drawScene(state, dragState = null) {
 
   if (dragState) {
     drawDisk(
-      { x: dragState.x, y: dragState.y, width: dragState.width, height: dragState.height },
+      {
+        x: dragState.x,
+        y: dragState.y,
+        width: dragState.width,
+        height: dragState.height,
+      },
       dragState.color,
     );
   }

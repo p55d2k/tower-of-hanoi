@@ -73,9 +73,7 @@ class TowerOfHanoi:
         print(f"Total steps taken: {self.step}")
         print(f"Optimal steps expected (2^{self.n} - 1): {2**self.n - 1}")
 
-        self.last_action = (
-            f"You win! Steps: {self.step}. Optimal: {2**self.n - 1}."
-        )
+        self.last_action = f"You win! Steps: {self.step}. Optimal: {2**self.n - 1}."
 
         return True
 
