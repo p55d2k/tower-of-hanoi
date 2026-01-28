@@ -1,0 +1,30 @@
+## Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.*
+instance/
+
+## Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+## Vercel
+.vercel/
+
+## macOS
+.DS_Store
+
+## VS Code
+.vscode/

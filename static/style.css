@@ -1,114 +1,13 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-}
-
-body {
-    background: #f4f7fb;
-    color: #1f2937;
-}
-
-.app {
-    max-width: 960px;
-    margin: 32px auto;
-    padding: 24px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-}
-
-.header {
-    margin-bottom: 16px;
-}
-
-.header h1 {
-    font-size: 2rem;
-    margin-bottom: 4px;
-}
-
-.subtitle {
-    color: #64748b;
-}
-
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 16px 0 20px;
-}
-
-.control-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    background: #f8fafc;
-}
-
-label {
-    font-weight: 600;
-    color: #334155;
-}
-
-input,
-select,
-button {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid #cbd5f5;
-    background: #ffffff;
-    font-size: 0.95rem;
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    background: #e2e8f0;
-    transition: transform 0.1s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
-}
-
-button.primary {
-    background: #2563eb;
-    color: #ffffff;
-}
-
-button.secondary {
-    background: #0f766e;
-    color: #ffffff;
-}
-
-.status {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 12px;
-    color: #475569;
-    font-weight: 600;
-}
-
-.message {
-    margin-left: auto;
-    color: #ef4444;
-}
-
-.board {
-    border-radius: 16px;
-    background: #0f172a;
-    padding: 16px;
-    display: flex;
-    justify-content: center;
+  box-sizing: border-box;
 }
 
 canvas {
-    background: #0b1220;
-    border-radius: 12px;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+canvas.canvas-dragging {
+  cursor: grabbing;
 }

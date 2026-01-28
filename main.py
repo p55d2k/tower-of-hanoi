@@ -35,12 +35,16 @@ class TowerOfHanoi:
         self.reset_step()
         self.reset_towers()
         self.reset_moves()
+        self.last_action = f"Ready with {self.n} disks."
 
     def get_n(self) -> int:
         return self.n
 
     def get_step(self) -> int:
         return self.step
+
+    def get_last_action(self) -> str:
+        return self.last_action
 
     def get_tower(self, tower: str) -> dict:
         return self.towers[tower]
@@ -69,12 +73,17 @@ class TowerOfHanoi:
         print(f"Total steps taken: {self.step}")
         print(f"Optimal steps expected (2^{self.n} - 1): {2**self.n - 1}")
 
+        self.last_action = (
+            f"You win! Steps: {self.step}. Optimal: {2**self.n - 1}."
+        )
+
         return True
 
     def move_disk(self, src: str, dest: str, is_solving: bool = False):
         # check if src tower is empty
         if self.towers[src].is_empty():
             print(f"Invalid move: source tower is empty.")
+            self.last_action = "Invalid move: source tower is empty."
             return False
 
         # check if top disk on src tower is smaller than top disk on dest tower
@@ -85,6 +94,9 @@ class TowerOfHanoi:
             print(
                 "Invalid move: disk from source is larger than top disk in dest tower."
             )
+            self.last_action = (
+                "Invalid move: disk from source is larger than top disk in dest tower."
+            )
             return False
 
         # move disk
@@ -93,6 +105,8 @@ class TowerOfHanoi:
 
         # increment step
         self.step += 1
+
+        self.last_action = f"Step {self.step}: Move disk from {src} to {dest}."
 
         # print step count and movement
         print(f"Step {self.step}")
@@ -114,6 +128,7 @@ class TowerOfHanoi:
         # check if there are moves to undo
         if self.move_stk.is_empty():
             print("No moves to undo.")
+            self.last_action = "No moves to undo."
             return
 
         # undo last move
@@ -124,18 +139,21 @@ class TowerOfHanoi:
         # decrement step
         self.step -= 1
 
+        self.last_action = f"Step {self.step}: Undo move from {dest} to {src}."
+
         # print step count and movement
         print(f"Step {self.step}")
         print(f"Undoing move: moving disk from {dest} to {src}")
         print(str(self) + "\n")
 
         # record move for redo
-        self.redo_stk.push((dest, src))
+        self.redo_stk.push((src, dest))
 
     def redo_move(self):
         # check if there are moves to redo
         if self.redo_stk.is_empty():
             print("No moves to redo.")
+            self.last_action = "No moves to redo."
             return
 
         # redo last undone move
@@ -145,6 +163,8 @@ class TowerOfHanoi:
 
         # increment step
         self.step += 1
+
+        self.last_action = f"Step {self.step}: Redo move from {src} to {dest}."
 
         # print step count and movement
         print(f"Step {self.step}")

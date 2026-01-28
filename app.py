@@ -17,6 +17,7 @@ def serialize_game() -> Dict[str, object]:
     return {
         "n": game.get_n(),
         "step": game.get_step(),
+        "last_action": game.get_last_action(),
         "towers": {key: value.items[:] for key, value in game.towers.items()},
     }
 
@@ -66,7 +67,9 @@ def move():
     with state_lock:
         result = game.move_disk(src, dest)
         if result is False:
-            return jsonify({"ok": False, "message": "Invalid move.", "state": serialize_game()})
+            return jsonify(
+                {"ok": False, "message": "Invalid move.", "state": serialize_game()}
+            )
         return jsonify({"ok": True, "state": serialize_game()})
 
 
@@ -90,6 +93,7 @@ def solve():
         game.reset_step()
         game.reset_towers()
         game.reset_moves()
+        game.last_action = "Solving started."
         moves = generate_moves(game.get_n(), "A", "C", "B")
         return jsonify({"ok": True, "state": serialize_game(), "moves": moves})
 

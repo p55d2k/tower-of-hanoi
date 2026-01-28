@@ -1,57 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tower of Hanoi</title>
-        <link rel="stylesheet" href="/static/style.css" />
-    </head>
-    <body>
-        <div class="app">
-            <header class="header">
-                <h1>Tower of Hanoi</h1>
-                <p class="subtitle">Play in your browser using Flask.</p>
-            </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tower of Hanoi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased">
+    <div
+      class="flex min-h-screen w-screen flex-col gap-6 bg-slate-950 p-4 lg:h-screen lg:flex-row lg:p-6"
+    >
+      <!-- Left: Board + Logs -->
+      <aside class="flex flex-1 flex-col gap-6">
+        <!-- Board Section -->
+        <section
+          class="rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-[0_25px_60px_rgba(15,23,42,0.6)] backdrop-blur"
+        >
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold">Board</h2>
+            <span class="text-xs text-slate-400"
+              >Reset stops solving instantly</span
+            >
+          </div>
+          <div
+            class="mt-4 flex min-h-[280px] flex-1 justify-center rounded-2xl border border-slate-800 bg-slate-950/70 p-4 sm:min-h-[360px] lg:min-h-[420px]"
+          >
+            <canvas
+              id="board"
+              width="760"
+              height="420"
+              class="h-full w-full rounded-xl bg-slate-950/90"
+            ></canvas>
+          </div>
+          <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+            <span class="inline-flex h-2 w-2 rounded-full bg-sky-400"></span>
+            Drag top disks to move
+          </div>
+        </section>
 
-            <section class="controls">
-                <div class="control-group">
-                    <label for="diskCount">Disks</label>
-                    <input id="diskCount" type="number" min="3" max="10" value="3" />
-                    <button id="resetBtn" class="primary">Reset</button>
-                </div>
-                <div class="control-group">
-                    <label for="srcTower">Move</label>
-                    <select id="srcTower">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                    </select>
-                    <span>→</span>
-                    <select id="destTower">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                    </select>
-                    <button id="moveBtn">Move</button>
-                </div>
-                <div class="control-group">
-                    <button id="undoBtn">Undo</button>
-                    <button id="redoBtn">Redo</button>
-                    <button id="solveBtn" class="secondary">Solve</button>
-                </div>
-            </section>
+        <!-- Logs Section -->
+        <section
+          class="flex-1 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.5)] mb-6 backdrop-blur"
+        >
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-lg font-semibold">Logs</h2>
+            <button
+              id="clearLogsBtn"
+              class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 shadow hover:bg-slate-700"
+            >
+              Clear
+            </button>
+          </div>
+          <div
+            id="logsList"
+            class="mt-4 max-h-64 space-y-2 overflow-y-auto rounded-2xl border border-slate-800 bg-slate-950/80 p-4 text-sm text-slate-200"
+          ></div>
+        </section>
+      </aside>
 
-            <section class="status">
-                <div id="stepText">Step: 0</div>
-                <div id="optimalText">Optimal: 0</div>
-                <div id="message" class="message"></div>
-            </section>
+      <!-- Right: Menu/Dashboard -->
+      <main
+        class="w-full max-w-full self-start overflow-y-visible lg:w-96 lg:overflow-y-auto"
+      >
+        <!-- Header -->
+        <header
+          class="rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-[0_25px_60px_rgba(15,23,42,0.6)] backdrop-blur"
+        >
+          <h1 class="text-3xl font-semibold tracking-tight">Tower of Hanoi</h1>
+          <p class="mt-1 text-sm text-slate-400">
+            Play in your browser with a drag-and-drop board and live move logs.
+          </p>
+        </header>
 
-            <section class="board">
-                <canvas id="board" width="760" height="420"></canvas>
-            </section>
+        <div
+          id="winBanner"
+          class="mt-6 hidden flex-wrap items-center justify-between gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-emerald-100 shadow-[0_0_30px_rgba(16,185,129,0.35)]"
+        >
+          <div class="text-sm font-semibold">You win! 🎉</div>
+          <div id="winStats" class="text-xs text-emerald-200"></div>
         </div>
 
-        <script src="/static/app.js"></script>
-    </body>
+        <!-- Controls -->
+        <section
+          class="mt-6 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-[0_20px_50px_rgba(15,23,42,0.5)] backdrop-blur"
+        >
+          <div class="space-y-4">
+            <!-- Disk Control -->
+            <div
+              class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3"
+            >
+              <label for="diskCount" class="text-sm font-medium text-slate-300"
+                >Disks</label
+              >
+              <input
+                id="diskCount"
+                type="number"
+                min="3"
+                max="10"
+                value="3"
+                class="w-20 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-sky-400 focus:outline-none"
+              />
+              <button
+                id="resetBtn"
+                class="inline-flex items-center justify-center rounded-md bg-sky-400 px-4 py-2 text-sm font-medium text-slate-950 shadow hover:bg-sky-300 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Reset
+              </button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div
+              class="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3"
+            >
+              <button
+                id="undoBtn"
+                class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 shadow hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Undo
+              </button>
+              <button
+                id="redoBtn"
+                class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 shadow hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Redo
+              </button>
+              <button
+                id="solveBtn"
+                class="inline-flex items-center justify-center rounded-md bg-emerald-400 px-4 py-2 text-sm font-medium text-slate-950 shadow hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Solve
+              </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="space-y-2 text-sm text-slate-300">
+              <div
+                id="stepText"
+                class="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1"
+              >
+                Step: 0
+              </div>
+              <div
+                id="optimalText"
+                class="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1"
+              >
+                Optimal: 0
+              </div>
+              <div id="message" class="text-sm font-medium text-rose-400"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
 </html>
